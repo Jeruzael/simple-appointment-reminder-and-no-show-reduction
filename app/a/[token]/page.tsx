@@ -3,15 +3,16 @@ import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { BUSINESS_TIMEZONE } from "@/lib/time";
 
 type PageProps = {
-  params: { token: string };
+  params: Promise<{ token: string }>;
 };
 
 export default async function ManageAppointmentPage({ params }: PageProps) {
+  const { token } = await params;
   const supabase = getSupabaseAdmin();
   const { data: appointment } = await supabase
     .from("appointments")
     .select("id, customer_name, start_time, end_time, status, services(name)")
-    .eq("manage_token", params.token)
+    .eq("manage_token", token)
     .maybeSingle();
 
   if (!appointment) {

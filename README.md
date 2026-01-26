@@ -19,6 +19,9 @@ A simple appointment reminder and no-show reduction system for salons and barber
 2) Paste and run `docs/03-Implementation/Supabase-Schema.sql`.
 3) Verify tables and policies were created successfully.
 
+## Resend sender note
+Use a verified sender domain in Resend. Example: `no-reply@exorex.org`.
+
 ## Key docs
 - Scope: `docs/00-Overview/Scope.md`
 - Architecture: `docs/02-Design/Architecture.md`
