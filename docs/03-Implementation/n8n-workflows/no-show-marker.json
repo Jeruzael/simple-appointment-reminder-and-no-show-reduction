@@ -1,0 +1,155 @@
+{
+  "name": "No-show Marker",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 10,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "cutoffUtc",
+              "value": "={{$now.minus({minutes: 15}).toISO()}}"
+            }
+          ]
+        }
+      },
+      "id": "set-cutoff",
+      "name": "Set cutoff",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/appointments",
+        "method": "GET",
+        "authentication": "none",
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "select",
+              "value": "id,customer_name,customer_email,start_time,manage_token,status"
+            },
+            {
+              "name": "status",
+              "value": "in.(booked,confirmed)"
+            },
+            {
+              "name": "start_time",
+              "value": "lte.={{$json.cutoffUtc}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        }
+      },
+      "id": "supabase-query",
+      "name": "Supabase query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/appointments",
+        "method": "PATCH",
+        "authentication": "none",
+        "jsonParameters": true,
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "id",
+              "value": "eq.={{$json.id}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "bodyParametersJson": "={ \"status\": \"no_show\" }"
+      },
+      "id": "mark-no-show",
+      "name": "Mark no-show",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Set cutoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set cutoff": {
+      "main": [
+        [
+          {
+            "node": "Supabase query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase query": {
+      "main": [
+        [
+          {
+            "node": "Mark no-show",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

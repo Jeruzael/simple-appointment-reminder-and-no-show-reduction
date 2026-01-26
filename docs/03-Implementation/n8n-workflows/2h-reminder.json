@@ -1,0 +1,246 @@
+{
+  "name": "2h Reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 10,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "windowMinutes",
+              "value": 120
+            }
+          ]
+        }
+      },
+      "id": "set-window",
+      "name": "Set window",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const { DateTime } = require(\"luxon\");\n\nconst timezone = \"Asia/Manila\";\nconst now = DateTime.now().setZone(timezone);\n\nconst windowMinutes = $json.windowMinutes;\nconst start = now.plus({ minutes: windowMinutes - 5 });\nconst end = now.plus({ minutes: windowMinutes + 5 });\n\nreturn [{\n  windowStartUtc: start.toUTC().toISO(),\n  windowEndUtc: end.toUTC().toISO(),\n}];"
+      },
+      "id": "compute-window",
+      "name": "Compute window",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/appointments",
+        "method": "GET",
+        "authentication": "none",
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "select",
+              "value": "id,customer_name,customer_email,start_time,manage_token"
+            },
+            {
+              "name": "status",
+              "value": "in.(booked,confirmed)"
+            },
+            {
+              "name": "reminder_2h_sent_at",
+              "value": "is.null"
+            },
+            {
+              "name": "start_time",
+              "value": "gte.={{$json.windowStartUtc}}"
+            },
+            {
+              "name": "start_time",
+              "value": "lte.={{$json.windowEndUtc}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        }
+      },
+      "id": "supabase-query",
+      "name": "Supabase query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.customer_email}}",
+              "operation": "notEmpty"
+            }
+          ]
+        }
+      },
+      "id": "has-email",
+      "name": "Has email?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.resend.com/emails",
+        "method": "POST",
+        "authentication": "none",
+        "jsonParameters": true,
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.RESEND_API_KEY}}"
+            }
+          ]
+        },
+        "bodyParametersJson": "={\n  \"from\": \"no-reply@exorex.org\",\n  \"to\": $json.customer_email,\n  \"subject\": \"Your appointment is in 2 hours\",\n  \"html\": `<p>Hi ${$json.customer_name},</p><p>Your appointment is in 2 hours.</p><p>Manage your appointment: <a href=\\\"http://localhost:3000/a/${$json.manage_token}\\\">http://localhost:3000/a/${$json.manage_token}</a></p>`\n}"
+      },
+      "id": "resend-email",
+      "name": "Resend email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1340, 260]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/appointments",
+        "method": "PATCH",
+        "authentication": "none",
+        "jsonParameters": true,
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "id",
+              "value": "eq.={{$json.id}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "bodyParametersJson": "={ \"reminder_2h_sent_at\": $now.toISO() }"
+      },
+      "id": "mark-sent",
+      "name": "Mark 2h sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1560, 260]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Set window",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set window": {
+      "main": [
+        [
+          {
+            "node": "Compute window",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute window": {
+      "main": [
+        [
+          {
+            "node": "Supabase query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase query": {
+      "main": [
+        [
+          {
+            "node": "Has email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has email?": {
+      "main": [
+        [
+          {
+            "node": "Resend email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Resend email": {
+      "main": [
+        [
+          {
+            "node": "Mark 2h sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

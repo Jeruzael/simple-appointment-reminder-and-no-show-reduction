@@ -18,3 +18,15 @@
 - Changed: Landing page content and metadata
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-26
+- Added: n8n workflow implementation guide
+- Changed: N/A
+- Fixed: N/A
+- Breaking: N/A
+
+## 2026-01-26
+- Added: Importable n8n workflow JSON files (24h, 2h, no-show, weekly report)
+- Changed: N/A
+- Fixed: N/A
+- Breaking: N/A

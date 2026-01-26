@@ -1,0 +1,154 @@
+{
+  "name": "Weekly Report (Inactive)",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyWeek",
+              "hour": 8,
+              "minute": 0,
+              "weekday": "Monday"
+            }
+          ]
+        }
+      },
+      "id": "cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const { DateTime } = require(\"luxon\");\nconst timezone = \"Asia/Manila\";\nconst end = DateTime.now().setZone(timezone).endOf(\"week\");\nconst start = end.minus({ days: 7 });\nreturn [{\n  startUtc: start.toUTC().toISO(),\n  endUtc: end.toUTC().toISO(),\n}];"
+      },
+      "id": "week-window",
+      "name": "Compute week window",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/appointments",
+        "method": "GET",
+        "authentication": "none",
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "select",
+              "value": "status,created_at"
+            },
+            {
+              "name": "created_at",
+              "value": "gte.={{$json.startUtc}}"
+            },
+            {
+              "name": "created_at",
+              "value": "lte.={{$json.endUtc}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        }
+      },
+      "id": "supabase-query",
+      "name": "Supabase query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const totals = { booked: 0, confirmed: 0, cancelled: 0, rescheduled: 0, attended: 0, no_show: 0 };\nfor (const item of $input.all()) {\n  const status = item.json.status;\n  if (status && totals[status] !== undefined) {\n    totals[status] += 1;\n  }\n}\nreturn [{ totals }];"
+      },
+      "id": "aggregate",
+      "name": "Aggregate totals",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.resend.com/emails",
+        "method": "POST",
+        "authentication": "none",
+        "jsonParameters": true,
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.RESEND_API_KEY}}"
+            }
+          ]
+        },
+        "bodyParametersJson": "={\n  \"from\": \"no-reply@exorex.org\",\n  \"to\": \"jeruzael.d@gmail.com\",\n  \"subject\": \"Weekly appointment summary\",\n  \"html\": `<p>Weekly totals:</p><pre>${JSON.stringify($json.totals, null, 2)}</pre>`\n}"
+      },
+      "id": "send-report",
+      "name": "Send report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Compute week window",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute week window": {
+      "main": [
+        [
+          {
+            "node": "Supabase query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase query": {
+      "main": [
+        [
+          {
+            "node": "Aggregate totals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate totals": {
+      "main": [
+        [
+          {
+            "node": "Send report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}
