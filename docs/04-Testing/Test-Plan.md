@@ -22,6 +22,7 @@
 - Supabase dev project
 - n8n dev instance with test credentials
 - Playwright installed (`npm run test:e2e`)
+- E2E: `TEST_SERVICE_ID` set for manage-link test
 
 ## Pass/fail criteria
 - All acceptance criteria in `docs/01-Requirements/User-Stories.md`

@@ -66,3 +66,15 @@
 - Changed: Test plan updated for E2E coverage
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-26
+- Added: Manage-link E2E test with appointment creation
+- Changed: Testing docs updated with TEST_SERVICE_ID
+- Fixed: N/A
+- Breaking: N/A
+
+## 2026-01-26
+- Added: Playwright dotenv loading for .env.test and .env.local
+- Changed: Added .env.test.example
+- Fixed: N/A
+- Breaking: N/A

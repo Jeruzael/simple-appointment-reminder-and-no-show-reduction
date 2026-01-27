@@ -30,6 +30,11 @@
 ## Tests
 - `npm run test:e2e` (Playwright)
 
+### E2E test env vars (optional)
+- `TEST_SERVICE_ID` (required for manage-link E2E test)
+- `TEST_CUSTOMER_EMAIL` (optional override for test email)
+- Use `.env.test` for Playwright (`.env.test.example` provided).
+
 ## Lint/format
 - `npm run lint`
 
