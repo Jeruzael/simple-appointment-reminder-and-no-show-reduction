@@ -21,6 +21,8 @@
 - Reminder send success rate
 - No-show rate per week
 - Booking conversion rate
+- n8n workflow failure count
+- Resend API error rate
 
 ## Safe restart procedure
 - Pause n8n workflows
@@ -29,3 +31,7 @@
 
 ## Recovery validation
 - Create a test appointment and run a manual reminder
+
+## Backups
+- Supabase automated backups enabled (verify in project settings)
+- Export n8n workflows weekly and store in repo or backup location

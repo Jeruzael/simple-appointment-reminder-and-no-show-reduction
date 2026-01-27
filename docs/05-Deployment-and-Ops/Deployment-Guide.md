@@ -41,6 +41,13 @@
 - Verify admin login and check-in
 - Confirm reminders are computed in Asia/Manila time
 
+## Smoke test checklist (prod)
+- Book an appointment and confirm email delivery
+- Open manage link and view appointment details
+- Admin login and check-in on today view
+- Run 24h and 2h workflows manually (no duplicates)
+- Run no-show workflow on a backdated test row
+
 ## Secrets rotation (high level)
 - Rotate provider keys in Supabase/Vercel and n8n
 - Verify reminders still send after rotation

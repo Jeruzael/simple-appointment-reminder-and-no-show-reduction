@@ -31,3 +31,10 @@
 - Manage link actions
 - Reminder sends
 - No-show marking
+
+## Smoke test checklist (prod)
+- Book appointment and verify confirmation email
+- Check manage link loads
+- Admin login and check-in works
+- Run 24h/2h reminder workflows (no duplicates)
+- Run no-show workflow on backdated appointment
