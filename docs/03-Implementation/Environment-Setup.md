@@ -28,7 +28,7 @@
 3) `npm run dev`
 
 ## Tests
-- `npm run test` (if configured)
+- `npm run test:e2e` (Playwright)
 
 ## Lint/format
 - `npm run lint`

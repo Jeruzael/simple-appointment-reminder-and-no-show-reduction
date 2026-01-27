@@ -48,3 +48,21 @@
 - Changed: Deployment and runbook hardening details
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-26
+- Added: Production release runbook
+- Changed: N/A
+- Fixed: N/A
+- Breaking: N/A
+
+## 2026-01-26
+- Added: Deployment checklist and observability guidance
+- Changed: Production runbook updated for monitoring
+- Fixed: N/A
+- Breaking: N/A
+
+## 2026-01-26
+- Added: Playwright E2E setup and sample test
+- Changed: Test plan updated for E2E coverage
+- Fixed: N/A
+- Breaking: N/A

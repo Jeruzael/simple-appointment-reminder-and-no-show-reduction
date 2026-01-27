@@ -16,11 +16,12 @@
 ## Test types
 - Unit: validation and date window logic
 - Integration: API endpoints with Supabase
-- E2E: booking -> reminder -> check-in
+- E2E: booking -> reminder -> check-in (Playwright)
 
 ## Test environment needs
 - Supabase dev project
 - n8n dev instance with test credentials
+- Playwright installed (`npm run test:e2e`)
 
 ## Pass/fail criteria
 - All acceptance criteria in `docs/01-Requirements/User-Stories.md`
