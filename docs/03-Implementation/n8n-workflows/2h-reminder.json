@@ -38,11 +38,11 @@
     },
     {
       "parameters": {
-        "functionCode": "const { DateTime } = require(\"luxon\");\n\nconst timezone = \"Asia/Manila\";\nconst now = DateTime.now().setZone(timezone);\n\nconst windowMinutes = $json.windowMinutes;\nconst start = now.plus({ minutes: windowMinutes - 5 });\nconst end = now.plus({ minutes: windowMinutes + 5 });\n\nreturn [{\n  windowStartUtc: start.toUTC().toISO(),\n  windowEndUtc: end.toUTC().toISO(),\n}];"
+        "jsCode": "const windowMinutes = $json.windowMinutes;\nconst now = new Date();\nconst start = new Date(now.getTime() + (windowMinutes - 5) * 60 * 1000);\nconst end = new Date(now.getTime() + (windowMinutes + 5) * 60 * 1000);\nreturn [{\n  windowStartUtc: start.toISOString(),\n  windowEndUtc: end.toISOString(),\n}];"
       },
       "id": "compute-window",
       "name": "Compute window",
-      "type": "n8n-nodes-base.function",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [680, 300]
     },

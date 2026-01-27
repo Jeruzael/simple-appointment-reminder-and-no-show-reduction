@@ -22,11 +22,11 @@
     },
     {
       "parameters": {
-        "functionCode": "const { DateTime } = require(\"luxon\");\nconst timezone = \"Asia/Manila\";\nconst end = DateTime.now().setZone(timezone).endOf(\"week\");\nconst start = end.minus({ days: 7 });\nreturn [{\n  startUtc: start.toUTC().toISO(),\n  endUtc: end.toUTC().toISO(),\n}];"
+        "jsCode": "const now = new Date();\nconst end = new Date(now);\nconst start = new Date(now);\nstart.setUTCDate(start.getUTCDate() - 7);\nreturn [{\n  startUtc: start.toISOString(),\n  endUtc: end.toISOString(),\n}];"
       },
       "id": "week-window",
       "name": "Compute week window",
-      "type": "n8n-nodes-base.function",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [460, 300]
     },
@@ -72,11 +72,11 @@
     },
     {
       "parameters": {
-        "functionCode": "const totals = { booked: 0, confirmed: 0, cancelled: 0, rescheduled: 0, attended: 0, no_show: 0 };\nfor (const item of $input.all()) {\n  const status = item.json.status;\n  if (status && totals[status] !== undefined) {\n    totals[status] += 1;\n  }\n}\nreturn [{ totals }];"
+        "jsCode": "const totals = { booked: 0, confirmed: 0, cancelled: 0, rescheduled: 0, attended: 0, no_show: 0 };\nfor (const item of $input.all()) {\n  const status = item.json.status;\n  if (status && totals[status] !== undefined) {\n    totals[status] += 1;\n  }\n}\nreturn [{ totals }];"
       },
       "id": "aggregate",
       "name": "Aggregate totals",
-      "type": "n8n-nodes-base.function",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [900, 300]
     },
