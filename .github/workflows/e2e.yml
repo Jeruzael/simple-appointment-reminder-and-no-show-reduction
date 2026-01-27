@@ -1,0 +1,42 @@
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL_FROM_ADDRESS: ${{ secrets.EMAIL_FROM_ADDRESS }}
+      APP_BASE_URL: http://localhost:3000
+      TEST_SERVICE_ID: ${{ secrets.TEST_SERVICE_ID }}
+      TEST_CUSTOMER_EMAIL: ${{ secrets.TEST_CUSTOMER_EMAIL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Start app
+        run: |
+          npm run dev -- --hostname 127.0.0.1 --port 3000 &
+          npx wait-on http://127.0.0.1:3000
+
+      - name: Run Playwright tests
+        run: npm run test:e2e

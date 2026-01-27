@@ -84,8 +84,8 @@ export default function AdminTodayPage() {
 
   async function handleCheckIn(appointmentId: string) {
     const supabase = getSupabaseBrowserClient();
-    const { error: updateError } = await supabase
-      .from("appointments")
+    const { error: updateError } = await (supabase
+      .from("appointments") as any)
       .update({ status: "attended" })
       .eq("id", appointmentId);
 

@@ -35,6 +35,9 @@
 - `TEST_CUSTOMER_EMAIL` (optional override for test email)
 - Use `.env.test` for Playwright (`.env.test.example` provided).
 
+## Pre-deploy check
+- `npm run predeploy` (runs production build)
+
 ## Lint/format
 - `npm run lint`
 

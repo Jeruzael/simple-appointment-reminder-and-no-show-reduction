@@ -78,3 +78,15 @@
 - Changed: Added .env.test.example
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-26
+- Added: GitHub Actions Playwright E2E workflow
+- Changed: Test plan includes CI coverage
+- Fixed: N/A
+- Breaking: N/A
+
+## 2026-01-26
+- Added: predeploy script for local production build
+- Changed: Environment setup includes predeploy step
+- Fixed: N/A
+- Breaking: N/A

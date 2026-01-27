@@ -18,6 +18,13 @@ type BookingPayload = {
   customer_phone?: string;
 };
 
+type ServiceRecord = {
+  id: string;
+  name: string;
+  duration_minutes: number;
+  active: boolean;
+};
+
 function randomToken() {
   return crypto.randomBytes(24).toString("hex");
 }
@@ -68,7 +75,7 @@ export async function POST(req: NextRequest) {
       .from("services")
       .select("id, name, duration_minutes, active")
       .eq("id", service_id)
-      .single();
+      .single<ServiceRecord>();
 
     if (serviceError || !service) {
       return NextResponse.json({ error: "Invalid service." }, { status: 400 });
@@ -130,8 +137,8 @@ export async function POST(req: NextRequest) {
     const confirm_token = randomToken();
     const manage_token = randomToken();
 
-    const { data: appointment, error: insertError } = await supabase
-      .from("appointments")
+    const { data: appointment, error: insertError } = await (supabase
+      .from("appointments") as any)
       .insert({
         service_id,
         customer_name,

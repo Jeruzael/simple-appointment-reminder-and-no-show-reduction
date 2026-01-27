@@ -40,3 +40,6 @@
 - Admin login and check-in works
 - Run 24h/2h reminder workflows (no duplicates)
 - Run no-show workflow on backdated appointment
+
+## CI
+- GitHub Actions runs Playwright E2E on push/PR (`.github/workflows/e2e.yml`).

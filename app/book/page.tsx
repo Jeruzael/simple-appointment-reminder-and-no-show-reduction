@@ -1,6 +1,13 @@
 import BookingForm from "./BookingForm";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 
+type ServiceRecord = {
+  id: string;
+  name: string;
+  duration_minutes: number;
+  active: boolean;
+};
+
 export default async function BookPage() {
   const supabase = getSupabaseAdmin();
   const { data: services } = await supabase
@@ -10,7 +17,7 @@ export default async function BookPage() {
     .order("name");
 
   const safeServices =
-    services?.map((service) => ({
+    (services as ServiceRecord[] | null)?.map((service) => ({
       id: service.id,
       name: service.name,
       duration_minutes: service.duration_minutes,

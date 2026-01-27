@@ -6,6 +6,15 @@ type PageProps = {
   params: Promise<{ token: string }>;
 };
 
+type AppointmentRecord = {
+  id: string;
+  customer_name: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  services?: { name: string } | null;
+};
+
 export default async function ManageAppointmentPage({ params }: PageProps) {
   const { token } = await params;
   const supabase = getSupabaseAdmin();
@@ -13,7 +22,7 @@ export default async function ManageAppointmentPage({ params }: PageProps) {
     .from("appointments")
     .select("id, customer_name, start_time, end_time, status, services(name)")
     .eq("manage_token", token)
-    .maybeSingle();
+    .maybeSingle<AppointmentRecord>();
 
   if (!appointment) {
     return (
