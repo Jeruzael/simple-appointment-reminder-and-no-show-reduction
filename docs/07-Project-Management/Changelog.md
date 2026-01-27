@@ -36,3 +36,9 @@
 - Changed: N/A
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-26
+- Added: No-show follow-up email + audit log + idempotency field
+- Changed: Supabase schema updated for follow-up sent timestamp
+- Fixed: N/A
+- Breaking: N/A

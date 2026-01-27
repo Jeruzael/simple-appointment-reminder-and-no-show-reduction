@@ -60,10 +60,14 @@ create table if not exists appointments (
   manage_token text not null unique,
   reminder_24h_sent_at timestamptz,
   reminder_2h_sent_at timestamptz,
+  no_show_followup_sent_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   check (end_time > start_time)
 );
+
+alter table appointments
+  add column if not exists no_show_followup_sent_at timestamptz;
 
 create table if not exists audit_log (
   id uuid primary key default gen_random_uuid(),

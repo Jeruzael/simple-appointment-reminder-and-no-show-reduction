@@ -46,7 +46,7 @@
   1) Query appointments where status in booked, confirmed
   2) now > start_time + 15 minutes
   3) Update status to no_show
-  4) Send follow-up message with rebook link
+  4) Send follow-up email with rebook link (only once)
 - External dependencies: Resend email credentials
 - Time zone: Asia/Manila for window calculation
 - Retries and error handling: retry status update then send follow-up

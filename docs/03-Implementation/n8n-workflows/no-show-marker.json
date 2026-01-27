@@ -52,6 +52,10 @@
               "value": "in.(booked,confirmed)"
             },
             {
+              "name": "no_show_followup_sent_at",
+              "value": "is.null"
+            },
+            {
               "name": "start_time",
               "value": "lte.={{$json.cutoffUtc}}"
             }
@@ -113,6 +117,96 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/audit_log",
+        "method": "POST",
+        "authentication": "none",
+        "jsonParameters": true,
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "bodyParametersJson": "={ \"appointment_id\": $json.id, \"action\": \"no_show_marked\", \"metadata\": { \"source\": \"n8n\" } }"
+      },
+      "id": "audit-log",
+      "name": "Audit log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.resend.com/emails",
+        "method": "POST",
+        "authentication": "none",
+        "jsonParameters": true,
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.RESEND_API_KEY}}"
+            }
+          ]
+        },
+        "bodyParametersJson": "={\n  \"from\": \"no-reply@exorex.org\",\n  \"to\": $json.customer_email,\n  \"subject\": \"We missed you — want to rebook?\",\n  \"html\": \"We missed you. Rebook here: <a href=\\\"http://localhost:3000/book\\\">http://localhost:3000/book</a>\"\n}"
+      },
+      "id": "followup-email",
+      "name": "Follow-up email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1340, 260]
+    },
+    {
+      "parameters": {
+        "url": "https://qzmxghxtwkunuzsbmdor.supabase.co/rest/v1/appointments",
+        "method": "PATCH",
+        "authentication": "none",
+        "jsonParameters": true,
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "id",
+              "value": "eq.={{$json.id}}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "bodyParametersJson": "={ \"no_show_followup_sent_at\": $now.toISO() }"
+      },
+      "id": "mark-followup",
+      "name": "Mark follow-up sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1560, 260]
     }
   ],
   "connections": {
@@ -143,6 +237,39 @@
         [
           {
             "node": "Mark no-show",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark no-show": {
+      "main": [
+        [
+          {
+            "node": "Audit log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit log": {
+      "main": [
+        [
+          {
+            "node": "Follow-up email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow-up email": {
+      "main": [
+        [
+          {
+            "node": "Mark follow-up sent",
             "type": "main",
             "index": 0
           }

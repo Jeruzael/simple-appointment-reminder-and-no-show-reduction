@@ -12,6 +12,7 @@
 - Supabase service role key: use as `apikey` and `Authorization: Bearer <key>`
 - Resend API base URL: `https://api.resend.com`
 - Timezone: Asia/Manila (compute windows in Manila, store UTC)
+- If using plain JS Date in Code nodes, set `TZ=Asia/Manila` in your n8n container.
 - Importable workflows: see `docs/03-Implementation/n8n-workflows/`
 
 ### Import instructions (n8n)
@@ -92,14 +93,19 @@ Same as 24h, but:
    - Query params:
      - `select`: `id,customer_name,customer_email,start_time,manage_token,status`
      - `status=in.(booked,confirmed)`
+     - `no_show_followup_sent_at=is.null`
      - `start_time=lte.{{$now.minus({minutes: 15}).toISO()}}`
    - Headers: `apikey`, `Authorization`
 3) HTTP Request (Supabase update):
    - Method: PATCH
    - URL: `https://<project-ref>.supabase.co/rest/v1/appointments?id=eq.{{$json.id}}`
    - Body: `{ "status": "no_show" }`
-4) (Optional) HTTP Request (Resend):
+4) HTTP Request (Resend):
    - Send a follow-up email with a rebook link.
+5) HTTP Request (Supabase update):
+   - Body: `{ "no_show_followup_sent_at": "<now>" }`
+6) HTTP Request (Supabase insert):
+   - Insert audit log row with action `no_show_marked`.
 
 ## Workflow: Weekly report (optional)
 1) Cron: weekly
