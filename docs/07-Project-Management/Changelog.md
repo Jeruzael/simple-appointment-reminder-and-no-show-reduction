@@ -96,3 +96,9 @@
 - Changed: Deployment checklist/runbook updated for VPS option
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-28
+- Added: Project status summary
+- Changed: README updated with beginner-friendly setup
+- Fixed: N/A
+- Breaking: N/A

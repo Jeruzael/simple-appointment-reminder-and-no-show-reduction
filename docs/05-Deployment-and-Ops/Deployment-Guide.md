@@ -12,6 +12,13 @@
 - Staging: Vercel preview deployment, Supabase staging project, n8n staging
 - Prod: Vercel production, Supabase prod project, n8n prod
 
+## VPS hosting (web + n8n)
+If hosting on a VPS:
+- Web app: `barber.exorex.org`
+- n8n: `n8n.exorex.org`
+- Reverse proxy: Caddy
+- Docker compose uses `/opt/stacks` layout
+
 ## Prerequisites
 - Vercel account with project linked
 - Supabase projects for dev, staging, prod
