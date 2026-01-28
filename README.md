@@ -3,26 +3,29 @@
 ## What this system does
 A simple appointment reminder and no-show reduction system for salons and barbershops. Customers book appointments, receive confirmation and reminders, and manage their booking via a secure link. Staff use an admin view to check in clients and track no-shows.
 
-## Screenshots
-### Product UI
-![Project landing](public/screenshots/project_landing.png)
-![Booking UI](public/screenshots/booking_ui.png)
-![Booking received email](public/screenshots/Booking_received.png)
-![Admin UI](public/screenshots/admin_ui.png)
-
-### n8n workflows
-![n8n workflows overview](public/screenshots/n8n_workflows.png)
-![24h reminder workflow](public/screenshots/24H_reminder_wf.png)
-![2h reminder workflow](public/screenshots/2h_reminder_wf.png)
-![No-show workflow](public/screenshots/no-show_wf.png)
-![Weekly report workflow](public/screenshots/weekly-report_wf.png)
-
 ## Tech stack
 - Next.js (App Router)
 - Supabase (Postgres + Auth)
 - n8n (scheduled reminder automation)
 - Resend (all outbound email)
 - Playwright (E2E tests)
+
+## Product UI (screenshots with context)
+**Landing page** — entry point for customers and admins.
+
+![Project landing](public/screenshots/project_landing.png)
+
+**Booking page** — customer booking form with time selection.
+
+![Booking UI](public/screenshots/booking_ui.png)
+
+**Confirmation email** — booking received message with manage link.
+
+![Booking received email](public/screenshots/Booking_received.png)
+
+**Admin today view** — check-in and status tracking.
+
+![Admin UI](public/screenshots/admin_ui.png)
 
 ## Quick start (beginner-friendly)
 1) Install Node.js 20.x and Git.
@@ -56,6 +59,27 @@ A simple appointment reminder and no-show reduction system for salons and barber
 
 ## Resend sender note
 Use a verified sender domain in Resend. Example: `no-reply@exorex.org`.
+
+## n8n workflows (screenshots with context)
+**Workflow overview** — all automations in one place.
+
+![n8n workflows overview](public/screenshots/n8n_workflows.png)
+
+**24h reminder** — sends the day-before reminder and updates the sent timestamp.
+
+![24h reminder workflow](public/screenshots/24H_reminder_wf.png)
+
+**2h reminder** — sends the 2-hour reminder and updates the sent timestamp.
+
+![2h reminder workflow](public/screenshots/2h_reminder_wf.png)
+
+**No-show workflow** — marks no-show, sends follow-up, writes audit log.
+
+![No-show workflow](public/screenshots/no-show_wf.png)
+
+**Weekly report** — optional weekly summary email (kept inactive by default).
+
+![Weekly report workflow](public/screenshots/weekly-report_wf.png)
 
 ## E2E tests (Playwright)
 1) Create `.env.test` from `.env.test.example`
