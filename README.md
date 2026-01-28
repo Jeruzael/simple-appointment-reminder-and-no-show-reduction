@@ -3,6 +3,20 @@
 ## What this system does
 A simple appointment reminder and no-show reduction system for salons and barbershops. Customers book appointments, receive confirmation and reminders, and manage their booking via a secure link. Staff use an admin view to check in clients and track no-shows.
 
+## Screenshots
+### Product UI
+![Project landing](public/screenshots/project_landing.png)
+![Booking UI](public/screenshots/booking_ui.png)
+![Booking received email](public/screenshots/Booking_received.png)
+![Admin UI](public/screenshots/admin_ui.png)
+
+### n8n workflows
+![n8n workflows overview](public/screenshots/n8n_workflows.png)
+![24h reminder workflow](public/screenshots/24H_reminder_wf.png)
+![2h reminder workflow](public/screenshots/2h_reminder_wf.png)
+![No-show workflow](public/screenshots/no-show_wf.png)
+![Weekly report workflow](public/screenshots/weekly-report_wf.png)
+
 ## Tech stack
 - Next.js (App Router)
 - Supabase (Postgres + Auth)
@@ -54,11 +68,13 @@ Use a verified sender domain in Resend. Example: `no-reply@exorex.org`.
    - `npm run test:e2e`
 
 ## Key docs
+- Start here: `docs/00-Overview/Start-Here.md`
 - Scope: `docs/00-Overview/Scope.md`
 - Architecture: `docs/02-Design/Architecture.md`
 - API spec: `docs/02-Design/API-Spec.md`
 - Automation flows: `docs/02-Design/Automation-Flows.md`
 - Deployment: `docs/05-Deployment-and-Ops/Deployment-Guide.md`
+- Release checklist: `docs/05-Deployment-and-Ops/Release-Checklist.md`
 - Handover: `docs/08-Handovers/Client-Handover.md`
 
 ## Environments
