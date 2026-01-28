@@ -90,3 +90,9 @@
 - Changed: Environment setup includes predeploy step
 - Fixed: N/A
 - Breaking: N/A
+
+## 2026-01-26
+- Added: GitHub Actions deploy workflow for VPS
+- Changed: Deployment checklist/runbook updated for VPS option
+- Fixed: N/A
+- Breaking: N/A

@@ -26,6 +26,11 @@
 - [ ] Deploy staging (preview).
 - [ ] Promote to production.
 
+## 2B) VPS (Next.js on Docker, optional)
+- [ ] Repo cloned to `/opt/stacks/app` on VPS.
+- [ ] `.env` set in `/opt/stacks/app/.env`.
+- [ ] GitHub Actions deploy workflow configured.
+
 ## 3) n8n (staging + prod)
 - [ ] Host n8n instances (staging and prod).
 - [ ] Set env vars:

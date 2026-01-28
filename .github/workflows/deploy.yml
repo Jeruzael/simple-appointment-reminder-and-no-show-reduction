@@ -1,0 +1,26 @@
+name: Deploy App
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            set -e
+            if [ ! -d /opt/stacks/app/.git ]; then
+              git clone ${{ secrets.APP_REPO_URL }} /opt/stacks/app
+            else
+              git -C /opt/stacks/app pull
+            fi
+            cd /opt/stacks/n8n
+            docker compose up -d --build app

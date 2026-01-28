@@ -39,6 +39,9 @@
 5) Enable n8n workflows in production.
 6) Run production smoke tests.
 
+## VPS deployment (optional)
+If hosting the web app on VPS, use the GitHub Actions deploy workflow (`.github/workflows/deploy.yml`).
+
 ## Rollback plan
 - Revert Vercel deployment to previous build.
 - Disable n8n workflows.
